@@ -1,755 +1,1020 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Tide Twist - Free HTML5 Game</title>
-<meta name="description" content="Play Tide Twist - Bounce to reverse gravity and connect ocean creatures of matching colors during tidal flows.">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#05070c">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tide Twist - Free HTML5 Game">
-<meta property="og:description" content="Play Tide Twist - Bounce to reverse gravity and connect ocean creatures of matching colors during tidal flows.">
-<meta property="og:url" content="https://balinti.github.io/tide-twist/">
-<meta property="og:image" content="https://balinti.github.io/tide-twist/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Tide Twist - Free HTML5 Game">
-<meta name="twitter:description" content="Play Tide Twist - Bounce to reverse gravity and connect ocean creatures of matching colors during tidal flows.">
-<meta name="twitter:image" content="https://balinti.github.io/tide-twist/og-image.png">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4099346100621490" crossorigin="anonymous"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#05070c;font-family:'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
-#wrap{position:relative;width:100%;max-width:420px;max-height:750px;aspect-ratio:420/750;margin:8px auto}
-canvas{display:block;width:100%;height:100%;border-radius:12px}
-#how{color:#6688aa;font-size:11px;text-align:center;max-width:420px;padding:8px 16px;line-height:1.5;opacity:.7}
-#how strong{color:#88aacc}
-</style>
+  <meta charset="UTF-8">
+  <title>Tide Twist - Free HTML5 Game</title>
+  <meta name="description" content="Play Tide Twist - Swipe to follow the twisting underwater path as the screen rotates with tidal waves.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a1628">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tide Twist - Free HTML5 Game">
+  <meta property="og:description" content="Play Tide Twist - Swipe to follow the twisting underwater path as the screen rotates with tidal waves.">
+  <meta property="og:url" content="https://balinti.github.io/tide-twist/">
+  <meta property="og:image" content="https://balinti.github.io/tide-twist/preview.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tide Twist - Free HTML5 Game">
+  <meta name="twitter:description" content="Play Tide Twist - Swipe to follow the twisting underwater path as the screen rotates with tidal waves.">
+  <meta name="twitter:image" content="https://balinti.github.io/tide-twist/preview.png">
+
+  <link rel="canonical" href="https://balinti.github.io/tide-twist/">
+
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4099346100621490" crossorigin="anonymous"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #04101f;
+      --accent: #00e5ff;
+      --text: #cce8ff;
+      --panel: rgba(0,20,50,0.85);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100dvh;
+      background: radial-gradient(ellipse at 50% 0%, #0a2040 0%, #04101f 70%);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    /* ── TOP HUD BAR ── */
+    #top-bar {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 14px 4px;
+      background: var(--panel);
+      border-bottom: 1px solid rgba(0,229,255,0.15);
+    }
+    #top-bar .score-block { text-align: center; }
+    #top-bar .label { font-size: 10px; letter-spacing: 1px; opacity: .6; text-transform: uppercase; }
+    #top-bar .value { font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1; }
+
+    /* ── GAME WRAPPER ── */
+    #game-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      image-rendering: pixelated;
+      background: #04101f;
+    }
+
+    /* ── BOTTOM BAR ── */
+    #bottom-bar {
+      width: 100%;
+      max-width: 420px;
+      padding: 6px 10px;
+      background: var(--panel);
+      border-top: 1px solid rgba(0,229,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 11px;
+      opacity: .65;
+    }
+
+    /* ── SEO SECTION ── */
+    #seo-section {
+      width: 100%;
+      max-width: 420px;
+      padding: 12px 14px 24px;
+    }
+
+    details summary {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      opacity: .8;
+      user-select: none;
+      list-style: none;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0,229,255,0.12);
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: '▶  '; font-size: 10px; }
+    details[open] summary::before { content: '▼  '; }
+    details p, details ul {
+      font-size: 12px;
+      line-height: 1.6;
+      opacity: .7;
+      margin-top: 8px;
+    }
+    details ul { padding-left: 18px; }
+
+    /* ── OVERLAY (start / gameover) ── */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(4,16,31,0.82);
+      backdrop-filter: blur(4px);
+      gap: 10px;
+      z-index: 10;
+      padding: 30px 20px;
+    }
+    #overlay.hidden { display: none; }
+
+    #overlay h1 {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #00e5ff, #0077ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      text-align: center;
+    }
+    #overlay .sub {
+      font-size: 13px;
+      opacity: .65;
+      text-align: center;
+      max-width: 280px;
+    }
+    #overlay .big-score {
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+    #overlay .score-label {
+      font-size: 12px;
+      opacity: .55;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .btn {
+      padding: 13px 32px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .5px;
+      transition: transform .1s, opacity .1s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.96); opacity: .85; }
+    .btn-primary  { background: linear-gradient(135deg,#00e5ff,#0055ff); color: #04101f; }
+    .btn-secondary { background: rgba(0,229,255,0.12); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+
+    /* Current direction indicator above canvas */
+    #current-arrow {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      pointer-events: none;
+      text-shadow: 0 0 8px rgba(0,229,255,.8);
+      transition: opacity .3s;
+      z-index: 5;
+    }
+  </style>
 </head>
 <body>
-<div id="wrap"><canvas id="c"></canvas></div>
-<div id="how"><strong>How to play Tide Twist:</strong> Tap or press Space to flip gravity between the top and bottom lanes. Match your diver's color to the gate color to pass through safely. Build combos for bonus points! Wrong color = game over. Speed increases as you score higher. Challenge your friends!</div>
+
+  <!-- TOP HUD -->
+  <div id="top-bar">
+    <div class="score-block">
+      <div class="label">Score</div>
+      <div class="value" id="hud-score">0</div>
+    </div>
+    <div class="score-block">
+      <div class="label">Best</div>
+      <div class="value" id="hud-best">0</div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="game-wrap">
+    <canvas id="c"></canvas>
+    <div id="current-arrow">← LEFT CURRENT</div>
+
+    <!-- START / GAME OVER OVERLAY -->
+    <div id="overlay">
+      <h1 id="ov-title">Tide Twist</h1>
+      <p class="sub" id="ov-sub">Resist the current. Pass through every gate.</p>
+      <div id="ov-score-wrap" style="display:none; text-align:center;">
+        <div class="score-label">Score</div>
+        <div class="big-score" id="ov-score">0</div>
+      </div>
+      <button class="btn btn-primary" id="btn-play">DIVE IN</button>
+      <button class="btn btn-secondary" id="btn-share" style="display:none;">SHARE</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div id="bottom-bar">
+    <span>&#127754; Tide Twist</span>
+    <span>&#183;</span>
+    <span>Tap to flip fin</span>
+    <span>&#183;</span>
+    <span>Free to play</span>
+  </div>
+
+  <!-- SEO / HOW TO PLAY -->
+  <section id="seo-section">
+    <details>
+      <summary>How to Play Tide Twist</summary>
+      <p>You control a glowing sea pearl drifting through a narrow underwater channel.</p>
+      <ul>
+        <li><strong>Tap / Space / Enter</strong> — Flip your fin to counter the current</li>
+        <li>The tide alternates between Left and Right current</li>
+        <li>Pass through the <strong>gap in each Reef Gate</strong> to score</li>
+        <li><strong>Perfect Pass</strong> (near center of gap) earns bonus points</li>
+        <li>Avoid hitting the walls or the reef bars</li>
+        <li>Speed, gap size, and flip frequency all increase over time!</li>
+      </ul>
+    </details>
+    <p style="font-size:11px; opacity:.35; margin-top:12px; text-align:center;">
+      Tide Twist — free hyper-casual HTML5 game. No download required.
+    </p>
+  </section>
+
 <script>
-(()=>{
 'use strict';
-const W=420,H=750;
-const canvas=document.getElementById('c');
-const ctx=canvas.getContext('2d');
-const wrap=document.getElementById('wrap');
+// ─────────────────────────────────────────────────────────
+//  TIDE TWIST — Current Flip
+//  Hyper-casual HTML5 Canvas game, single-file vanilla JS
+// ─────────────────────────────────────────────────────────
 
-// Hi-DPI
-function resize(){
-  const dpr=window.devicePixelRatio||1;
-  const r=wrap.getBoundingClientRect();
-  canvas.width=r.width*dpr;
-  canvas.height=r.height*dpr;
-  canvas.style.width=r.width+'px';
-  canvas.style.height=r.height+'px';
-  ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);
-}
-window.addEventListener('resize',resize);
-resize();
+// ── DOM refs ─────────────────────────────────────────────
+const canvas       = document.getElementById('c');
+const ctx          = canvas.getContext('2d');
+const overlay      = document.getElementById('overlay');
+const ovTitle      = document.getElementById('ov-title');
+const ovSub        = document.getElementById('ov-sub');
+const ovScoreWrap  = document.getElementById('ov-score-wrap');
+const ovScore      = document.getElementById('ov-score');
+const btnPlay      = document.getElementById('btn-play');
+const btnShare     = document.getElementById('btn-share');
+const hudScore     = document.getElementById('hud-score');
+const hudBest      = document.getElementById('hud-best');
+const currentArrow = document.getElementById('current-arrow');
 
-// States
-const START=0,PLAYING=1,GAMEOVER=2;
-let state=START;
+// ── Persistence ───────────────────────────────────────────
+const BEST_KEY = 'tidetwist_best_v2';
+let best = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
+hudBest.textContent = best;
 
-// Challenge
-const urlP=new URLSearchParams(window.location.search);
-const challengeScore=urlP.has('challenge')?parseInt(urlP.get('challenge'),10):0;
+// ── Game constants ────────────────────────────────────────
+const CHANNEL_W      = 260;   // logical channel width
+const PEARL_R        = 12;    // pearl radius
+const GATE_H         = 18;    // gate bar height
+const BASE_SPEED     = 150;   // px/s gate scroll speed
+const MAX_SPEED      = 420;
+const SPEED_STEP     = 16;    // speed gain per gate passed
+const BASE_GAP       = 110;   // initial gate gap width
+const MIN_GAP        = 52;
+const GAP_SHRINK     = 2.0;   // gap reduction per gate
+const BASE_SPACING   = 340;   // vertical gap between gates
+const MIN_SPACING    = 170;
+const SPACING_SHRINK = 4;
+const TIDE_BASE_INT  = 3.5;   // seconds between tide flips
+const TIDE_MIN_INT   = 1.2;
+const CURRENT_FORCE  = 190;   // px/s lateral push from tide
+const FIN_FORCE      = 215;   // px/s counter force from fin
+const DRAG           = 5.0;   // velocity damping per second
+const WALL_BOUNCE    = 0.25;
+const DT_MAX         = 0.05;  // cap dt at 50ms
+const PERFECT_ZONE   = 22;    // px from gap center = perfect
 
-// Colors - ocean palette
-const COLORS=[
-  {h:190,s:85,l:55,name:'cyan'},
-  {h:320,s:75,l:60,name:'magenta'},
-  {h:45,s:90,l:60,name:'gold'},
-  {h:140,s:70,l:50,name:'green'}
+// Tide patterns (deterministic, readable sequences)
+const TIDE_PATTERNS = [
+  [-1, 1, -1, 1],
+  [-1, -1, 1, 1],
+  [1, -1, 1, -1, 1],
+  [-1, 1, 1, -1],
+  [1, 1, -1, -1, 1],
+  [-1, 1, -1, -1, 1],
+  [1, -1, -1, 1, 1, -1],
 ];
-function hsl(c,a){return `hsla(${c.h},${c.s}%,${c.l}%,${a!==undefined?a:1})`}
 
-// Game vars
-let score,best,combo,maxCombo,diverY,diverTargetY,diverColor,diverColorIdx;
-let gates,particles,bubbles;
-let scrollSpeed,spawnTimer,spawnInterval;
-let bgHue,shakeX,shakeY,shakeDur,shakeStr;
-let hitStop,hitStopTimer;
-let tidePhase;
-let diverX;
-let gameTime;
-let lastTime=0;
-let flashAlpha=0;
-let perfectFlash=0;
+// ── Canvas / DPR sizing ───────────────────────────────────
+let W = 0, H = 0, DPR = 1, CX = 0;
 
-// Lanes
-const LANE_TOP=160;
-const LANE_BOT=590;
-const LANE_MID=(LANE_TOP+LANE_BOT)/2;
-
-// Load best
-best=parseInt(localStorage.getItem('tideTwistBest'))||0;
-
-function init(){
-  score=0;combo=0;maxCombo=0;
-  diverY=LANE_BOT;diverTargetY=LANE_BOT;
-  diverColorIdx=0;diverColor=COLORS[0];
-  gates=[];particles=[];bubbles=[];
-  scrollSpeed=2.5;spawnTimer=0;spawnInterval=180;
-  bgHue=210;shakeX=0;shakeY=0;shakeDur=0;shakeStr=0;
-  hitStop=0;hitStopTimer=0;
-  tidePhase=0;diverX=100;gameTime=0;
-  flashAlpha=0;perfectFlash=0;
-}
-init();
-
-function nextColor(exclude){
-  let idx;
-  do{ idx=Math.floor(Math.random()*COLORS.length); }while(idx===exclude);
-  return idx;
+function resizeCanvas() {
+  const wrap = canvas.parentElement;
+  const rect  = wrap.getBoundingClientRect();
+  const logW  = rect.width  || 420;
+  // Fill remaining viewport height
+  const logH  = Math.max(300, window.innerHeight - wrap.getBoundingClientRect().top - 38);
+  DPR = window.devicePixelRatio || 1;
+  canvas.width        = Math.round(logW * DPR);
+  canvas.height       = Math.round(logH * DPR);
+  canvas.style.width  = logW + 'px';
+  canvas.style.height = logH + 'px';
+  W  = logW;
+  H  = logH;
+  CX = W / 2;
+  if (STATE !== 'playing') drawIdleBg();
 }
 
-function spawnGate(){
-  const correctLane=diverTargetY<=LANE_MID?'top':'bot';
-  const ci=diverColorIdx;
-  const wi=nextColor(ci);
+window.addEventListener('resize', resizeCanvas);
 
-  // Fakeout chance increases with score
-  const fakeoutChance=Math.min(0.4,score*0.008);
-  let topColorIdx,botColorIdx;
+// ── Game state ────────────────────────────────────────────
+let STATE = 'start'; // 'start' | 'playing' | 'gameover'
+let score = 0;
 
-  if(Math.random()<fakeoutChance){
-    // Fakeout: correct color on wrong lane
-    if(correctLane==='top'){
-      topColorIdx=wi;
-      botColorIdx=ci;
-    }else{
-      topColorIdx=ci;
-      botColorIdx=wi;
+// Live game objects (reset each round)
+let pearl, gates, particles, flowLines;
+let speed, gapW, spacing;
+let tideDir, finDir;
+let tideTimer, tideInterval;
+let tidePatternIdx, tidePattern;
+let shakeAmt, shakeDur;
+let hue;
+let comboMsg;
+let crashPending; // prevents double-crash
+
+// ── Init round ────────────────────────────────────────────
+function initGame() {
+  score = 0;
+  hudScore.textContent = '0';
+  hue      = 190;
+  speed    = BASE_SPEED;
+  gapW     = BASE_GAP;
+  spacing  = BASE_SPACING;
+
+  pearl = { x: CX, y: H * 0.70, vx: 0 };
+
+  gates     = [];
+  particles = [];
+  flowLines = buildFlowLines();
+
+  tideDir        = -1; // start pushing left
+  finDir         =  1; // fin counters to the right
+  tideTimer      = 0;
+  tideInterval   = TIDE_BASE_INT;
+  tidePattern    = TIDE_PATTERNS[0].slice();
+  tidePatternIdx = 0;
+
+  shakeAmt   = 0;
+  shakeDur   = 0;
+  comboMsg   = null;
+  crashPending = false;
+
+  updateCurrentArrow();
+
+  // Pre-spawn gates above the screen
+  let y = H * 0.25;
+  while (y > -spacing * 2) {
+    spawnGate(y);
+    y -= spacing;
+  }
+}
+
+// ── Flow lines (background current decoration) ────────────
+function buildFlowLines() {
+  const lines = [];
+  for (let i = 0; i < 16; i++) {
+    lines.push({
+      x: CX - CHANNEL_W / 2 + 8 + Math.random() * (CHANNEL_W - 16),
+      y: Math.random() * H,
+      len: 20 + Math.random() * 30,
+      spd: 55 + Math.random() * 75,
+      alpha: 0.05 + Math.random() * 0.09,
+    });
+  }
+  return lines;
+}
+
+// ── Gate spawning ─────────────────────────────────────────
+function spawnGate(y) {
+  // Gap side determined by tide pattern for telegraphed fairness
+  const side = tidePattern[tidePatternIdx % tidePattern.length];
+  tidePatternIdx++;
+
+  // Gap center: biased toward side the current is pushing away from
+  const margin  = gapW / 2 + 6;
+  const gapCX   = CX + side * (CHANNEL_W / 2 - margin);
+
+  gates.push({ y, gapCX, gapW, side, scored: false });
+}
+
+// ── Tide flip ─────────────────────────────────────────────
+function tickTide(dt) {
+  tideTimer += dt;
+  if (tideTimer >= tideInterval) {
+    tideTimer = 0;
+    tideDir = -tideDir;
+    // Rotate patterns as score increases
+    if (tidePatternIdx % tidePattern.length === 0) {
+      const pi = Math.floor(score / 5) % TIDE_PATTERNS.length;
+      tidePattern = TIDE_PATTERNS[pi].slice();
     }
-  }else{
-    // Normal: correct color on correct lane
-    if(correctLane==='top'){
-      topColorIdx=ci;
-      botColorIdx=wi;
-    }else{
-      topColorIdx=wi;
-      botColorIdx=ci;
-    }
-  }
-
-  const gateW=Math.max(50,80-score*0.3);
-  gates.push({
-    x:W+60,
-    w:gateW,
-    topColor:topColorIdx,
-    botColor:botColorIdx,
-    passed:false,
-    scored:false
-  });
-}
-
-function changeColor(){
-  const old=diverColorIdx;
-  diverColorIdx=nextColor(old);
-  diverColor=COLORS[diverColorIdx];
-}
-
-function flip(){
-  if(state===START){
-    state=PLAYING;
-    init();
-    state=PLAYING;
-    return;
-  }
-  if(state===GAMEOVER){
-    state=START;
-    init();
-    return;
-  }
-  if(state===PLAYING){
-    diverTargetY=diverTargetY<=LANE_MID?LANE_BOT:LANE_TOP;
+    updateCurrentArrow();
+    spawnCurrentIndicators();
   }
 }
 
-// Input
-canvas.addEventListener('pointerdown',e=>{e.preventDefault();flip()});
-document.addEventListener('keydown',e=>{
-  if(e.code==='Space'||e.code==='Enter'){e.preventDefault();flip()}
-});
+function updateCurrentArrow() {
+  currentArrow.textContent = tideDir === -1 ? '\u2190 LEFT CURRENT' : 'RIGHT CURRENT \u2192';
+}
 
-// Particles
-function addParticle(x,y,c,count,speed,life){
-  for(let i=0;i<count;i++){
-    const a=Math.random()*Math.PI*2;
-    const s=Math.random()*speed+1;
+function spawnCurrentIndicators() {
+  for (let i = 0; i < 7; i++) {
     particles.push({
-      x,y,
-      vx:Math.cos(a)*s,vy:Math.sin(a)*s,
-      life:life||40+Math.random()*20,
-      maxLife:life||40+Math.random()*20,
-      color:c,
-      r:3+Math.random()*4
+      type: 'arrow',
+      x: CX + (Math.random() - 0.5) * CHANNEL_W * 0.75,
+      y: H * 0.15 + Math.random() * H * 0.72,
+      vx: tideDir * (25 + Math.random() * 45),
+      vy: -15 + Math.random() * 30,
+      life: 1.0,
+      decay: 0.85 + Math.random() * 0.35,
     });
   }
 }
 
-function addBubble(x,y){
-  bubbles.push({
-    x:x-5+Math.random()*10,
-    y:y+Math.random()*10-5,
-    vx:-0.5-Math.random()*0.5,
-    vy:-0.3+Math.random()*0.6,
-    life:25+Math.random()*15,
-    maxLife:25+Math.random()*15,
-    r:2+Math.random()*3
+// ── Particles ─────────────────────────────────────────────
+function spawnBubble(x, y) {
+  particles.push({
+    type: 'bubble',
+    x, y,
+    vx: (Math.random() - 0.5) * 16,
+    vy: -(6 + Math.random() * 20),
+    r: 1.5 + Math.random() * 2.5,
+    life: 1.0,
+    decay: 1.6 + Math.random() * 1.0,
   });
 }
 
-function shake(str,dur){
-  shakeStr=str;shakeDur=dur;
-}
-
-function crash(){
-  state=GAMEOVER;
-  if(score>best){best=score;localStorage.setItem('tideTwistBest',best)}
-  addParticle(diverX,diverY,{h:240,s:30,l:20},30,5,50);
-  shake(12,30);
-  flashAlpha=0.6;
-}
-
-// Share
-function shareScore(){
-  const url=`https://balinti.github.io/tide-twist/?challenge=${score}`;
-  const text=`I scored ${score} in Tide Twist! Can you beat me?`;
-  if(navigator.share){
-    navigator.share({title:'Tide Twist',text,url}).catch(()=>{});
-  }else{
-    navigator.clipboard.writeText(`${text} ${url}`).then(()=>{
-      flashAlpha=0.3;
-    }).catch(()=>{});
+function spawnPerfectBurst(x, y) {
+  for (let i = 0; i < 20; i++) {
+    const ang = (Math.PI * 2 * i) / 20;
+    const spd = 55 + Math.random() * 90;
+    particles.push({
+      type: 'burst',
+      x, y,
+      vx: Math.cos(ang) * spd,
+      vy: Math.sin(ang) * spd,
+      r: 3 + Math.random() * 3,
+      life: 1.0,
+      decay: 1.3 + Math.random() * 0.7,
+      hue: hue + Math.random() * 50 - 25,
+    });
   }
 }
 
-let shareBtn={x:W/2-60,y:520,w:120,h:36};
-
-canvas.addEventListener('pointerdown',e=>{
-  if(state===GAMEOVER){
-    const r=wrap.getBoundingClientRect();
-    const sx=(e.clientX-r.left)/r.width*W;
-    const sy=(e.clientY-r.top)/r.height*H;
-    if(sx>=shareBtn.x&&sx<=shareBtn.x+shareBtn.w&&sy>=shareBtn.y&&sy<=shareBtn.y+shareBtn.h){
-      e.stopPropagation();
-      shareScore();
-      return;
-    }
+function spawnCrash(x, y) {
+  for (let i = 0; i < 28; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const spd = 45 + Math.random() * 130;
+    particles.push({
+      type: 'shard',
+      x, y,
+      vx: Math.cos(ang) * spd,
+      vy: Math.sin(ang) * spd - 45,
+      r: 2 + Math.random() * 5,
+      life: 1.0,
+      decay: 0.65 + Math.random() * 0.75,
+      hue: 195 + Math.random() * 50,
+    });
   }
-},{capture:true});
+}
 
-// Main loop
-function update(dt){
-  if(hitStop>0){hitStop-=dt;return}
+// ── Screen shake ──────────────────────────────────────────
+function shake(amount, duration) {
+  shakeAmt = Math.max(shakeAmt, amount);
+  shakeDur = Math.max(shakeDur, duration);
+}
 
-  gameTime+=dt;
-  tidePhase+=dt*0.02;
+// ── Main update ───────────────────────────────────────────
+function update(dt) {
+  dt = Math.min(dt, DT_MAX);
+  if (crashPending) return;
 
-  // Difficulty
-  scrollSpeed=2.5+score*0.08;
-  if(scrollSpeed>8)scrollSpeed=8;
-  spawnInterval=Math.max(60,180-score*2);
+  hue = (hue + dt * 8) % 360;
 
-  // Diver movement
-  const diverSpeed=0.12;
-  diverY+=(diverTargetY-diverY)*diverSpeed;
+  // ── Pearl physics ──────────────────────────────────────
+  const netForce = tideDir * CURRENT_FORCE + finDir * FIN_FORCE;
+  pearl.vx += netForce * dt;
+  pearl.vx -= pearl.vx * DRAG * dt; // drag
 
-  // Tide drift
-  const tideDrift=Math.sin(tidePhase)*8;
-  diverX=100+tideDrift;
+  pearl.x += pearl.vx * dt;
 
-  // Bubble trail
-  if(Math.random()<0.4){
-    addBubble(diverX-12,diverY);
+  // Wall bounds
+  const wallL = CX - CHANNEL_W / 2;
+  const wallR = CX + CHANNEL_W / 2;
+
+  if (pearl.x - PEARL_R < wallL) {
+    pearl.x = wallL + PEARL_R;
+    pearl.vx = Math.abs(pearl.vx) * WALL_BOUNCE;
+    triggerCrash();
+    return;
+  }
+  if (pearl.x + PEARL_R > wallR) {
+    pearl.x = wallR - PEARL_R;
+    pearl.vx = -Math.abs(pearl.vx) * WALL_BOUNCE;
+    triggerCrash();
+    return;
   }
 
-  // Spawn gates
-  spawnTimer+=dt;
-  if(spawnTimer>=spawnInterval/scrollSpeed){
-    spawnTimer=0;
-    spawnGate();
-  }
+  // ── Bubble trail ──────────────────────────────────────
+  if (Math.random() < 0.3) spawnBubble(pearl.x, pearl.y);
 
-  // Update gates
-  const checkLine=diverX+15;
-  for(let i=gates.length-1;i>=0;i--){
-    const g=gates[i];
-    g.x-=scrollSpeed;
+  // ── Tide ──────────────────────────────────────────────
+  tickTide(dt);
 
-    // Check pass
-    if(!g.passed&&g.x+g.w/2<checkLine){
-      g.passed=true;
+  // ── Gates ─────────────────────────────────────────────
+  for (let i = gates.length - 1; i >= 0; i--) {
+    const g = gates[i];
+    g.y += speed * dt;
 
-      const inTop=diverY<LANE_MID;
-      const laneColor=inTop?g.topColor:g.botColor;
+    // Score detection: gate passes pearl's y
+    if (!g.scored && g.y >= pearl.y - 2 && g.y <= pearl.y + speed * dt + 2) {
+      if (hitGate(g)) {
+        triggerCrash();
+        return;
+      }
+      g.scored = true;
+      score++;
+      hudScore.textContent = score;
+      if (score > best) {
+        best = score;
+        hudBest.textContent = best;
+        localStorage.setItem(BEST_KEY, best);
+      }
 
-      if(laneColor===diverColorIdx){
-        // Correct!
-        score++;combo++;
-        if(combo>maxCombo)maxCombo=combo;
-
-        // Perfect timing bonus
-        const dist=Math.abs(g.x+g.w/2-checkLine);
-        if(dist<10){
-          score++;
-          perfectFlash=15;
-          hitStop=3;
-          shake(3,8);
+      // Perfect pass check
+      const dist = Math.abs(pearl.x - g.gapCX);
+      if (dist < PERFECT_ZONE) {
+        score++;
+        hudScore.textContent = score;
+        if (score > best) {
+          best = score;
+          hudBest.textContent = best;
+          localStorage.setItem(BEST_KEY, best);
         }
-
-        g.scored=true;
-        addParticle(g.x+g.w/2,diverY,COLORS[diverColorIdx],12,3,30);
-
-        // Change diver color after scoring
-        changeColor();
-      }else{
-        crash();
-        return;
+        spawnPerfectBurst(pearl.x, pearl.y);
+        showCombo('PERFECT +2', pearl.x, pearl.y - 28);
+        shake(2.5, 0.13);
+      } else {
+        shake(1.2, 0.08);
       }
+
+      // Difficulty ramp
+      speed   = Math.min(MAX_SPEED,   speed   + SPEED_STEP);
+      gapW    = Math.max(MIN_GAP,     gapW    - GAP_SHRINK);
+      spacing = Math.max(MIN_SPACING, spacing - SPACING_SHRINK);
+      tideInterval = Math.max(TIDE_MIN_INT, TIDE_BASE_INT - score * 0.055);
     }
 
-    // Remove offscreen
-    if(g.x+g.w<-20){
-      if(!g.passed){
-        // Missed gate entirely
-        crash();
-        return;
-      }
-      gates.splice(i,1);
+    if (g.y > H + 60) gates.splice(i, 1);
+  }
+
+  // Spawn next gate when needed
+  if (gates.length === 0) {
+    spawnGate(pearl.y - spacing);
+  } else {
+    const topGateY = Math.min(...gates.map(g => g.y));
+    if (topGateY > -spacing * 0.1) {
+      spawnGate(topGateY - spacing);
     }
   }
 
-  // Particles
-  for(let i=particles.length-1;i>=0;i--){
-    const p=particles[i];
-    p.x+=p.vx;p.y+=p.vy;
-    p.vx*=0.96;p.vy*=0.96;
-    p.life-=dt;
-    if(p.life<=0)particles.splice(i,1);
+  // ── Particles ─────────────────────────────────────────
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    if (p.type === 'bubble') p.vy -= 12 * dt;
+    p.life -= p.decay * dt;
+    if (p.life <= 0) particles.splice(i, 1);
   }
 
-  // Bubbles
-  for(let i=bubbles.length-1;i>=0;i--){
-    const b=bubbles[i];
-    b.x+=b.vx;b.y+=b.vy;
-    b.life-=dt;
-    if(b.life<=0)bubbles.splice(i,1);
+  // ── Flow lines ────────────────────────────────────────
+  for (const fl of flowLines) {
+    fl.y += (fl.spd + speed * 0.35) * dt;
+    if (fl.y > H + fl.len) fl.y = -fl.len;
   }
 
-  // Shake decay
-  if(shakeDur>0){
-    shakeDur-=dt;
-    shakeX=(Math.random()-0.5)*shakeStr;
-    shakeY=(Math.random()-0.5)*shakeStr;
-    if(shakeDur<=0){shakeX=0;shakeY=0}
+  // ── Shake decay ───────────────────────────────────────
+  if (shakeDur > 0) {
+    shakeDur -= dt;
+    if (shakeDur <= 0) { shakeDur = 0; shakeAmt = 0; }
   }
 
-  // Background hue
-  bgHue=(210+score*2)%360;
-
-  // Flash decay
-  if(flashAlpha>0)flashAlpha-=0.02;
-  if(perfectFlash>0)perfectFlash-=dt;
+  // ── Combo label ───────────────────────────────────────
+  if (comboMsg) {
+    comboMsg.y  -= 38 * dt;
+    comboMsg.alpha -= 1.4 * dt;
+    if (comboMsg.alpha <= 0) comboMsg = null;
+  }
 }
 
-function drawBackground(){
-  const g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,`hsl(${bgHue},40%,8%)`);
-  g.addColorStop(0.5,`hsl(${(bgHue+20)%360},35%,12%)`);
-  g.addColorStop(1,`hsl(${(bgHue+40)%360},30%,6%)`);
-  ctx.fillStyle=g;
-  ctx.fillRect(0,0,W,H);
+// Circle vs AABB collision helper
+function circleAABB(px, py, r, ax, ay, bx, by) {
+  const nx = Math.max(ax, Math.min(px, bx));
+  const ny = Math.max(ay, Math.min(py, by));
+  const dx = px - nx, dy = py - ny;
+  return dx * dx + dy * dy < r * r;
+}
 
-  // Water caustics
-  ctx.globalAlpha=0.04;
-  for(let i=0;i<6;i++){
-    const cx=W/2+Math.sin(gameTime*0.01+i*1.2)*150;
-    const cy=H/2+Math.cos(gameTime*0.008+i*0.8)*200;
-    const rg=ctx.createRadialGradient(cx,cy,0,cx,cy,120);
-    rg.addColorStop(0,`hsl(${(bgHue+i*30)%360},60%,50%)`);
-    rg.addColorStop(1,'transparent');
-    ctx.fillStyle=rg;
-    ctx.fillRect(0,0,W,H);
+function hitGate(g) {
+  const wallL  = CX - CHANNEL_W / 2;
+  const wallR  = CX + CHANNEL_W / 2;
+  const gapL   = g.gapCX - g.gapW / 2;
+  const gapR   = g.gapCX + g.gapW / 2;
+  const top    = g.y - GATE_H / 2;
+  const bottom = g.y + GATE_H / 2;
+
+  // Left bar: wallL → gapL
+  if (gapL > wallL && circleAABB(pearl.x, pearl.y, PEARL_R, wallL, top, gapL, bottom)) return true;
+  // Right bar: gapR → wallR
+  if (gapR < wallR && circleAABB(pearl.x, pearl.y, PEARL_R, gapR,  top, wallR, bottom)) return true;
+  return false;
+}
+
+function showCombo(text, x, y) {
+  comboMsg = { text, x, y, alpha: 1.0 };
+}
+
+function triggerCrash() {
+  if (crashPending) return;
+  crashPending = true;
+  spawnCrash(pearl.x, pearl.y);
+  shake(15, 0.50);
+  setTimeout(() => setGameOver(), 370);
+}
+
+// ── Draw ──────────────────────────────────────────────────
+function draw() {
+  ctx.save();
+  ctx.scale(DPR, DPR);
+
+  // Screen shake offset
+  if (shakeAmt > 0 && shakeDur > 0) {
+    ctx.translate(
+      (Math.random() - 0.5) * shakeAmt * 2,
+      (Math.random() - 0.5) * shakeAmt * 2
+    );
   }
-  ctx.globalAlpha=1;
+
+  // Background gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#04101f');
+  bgGrad.addColorStop(1, '#030b15');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  drawFlowLines();
+  drawWalls();
+  for (const g of gates) drawGate(g);
+  drawParticles();
+  drawPearl();
+
+  if (comboMsg) {
+    ctx.globalAlpha = Math.max(0, comboMsg.alpha);
+    ctx.font        = 'bold 18px "Segoe UI", system-ui, sans-serif';
+    ctx.fillStyle   = `hsl(${hue}, 100%, 75%)`;
+    ctx.textAlign   = 'center';
+    ctx.fillText(comboMsg.text, comboMsg.x, comboMsg.y);
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
 }
 
-function drawLanes(){
-  // Lane lines
-  ctx.strokeStyle=`hsla(${bgHue},40%,30%,0.3)`;
-  ctx.lineWidth=1;
-  ctx.setLineDash([8,8]);
-  ctx.beginPath();
-  ctx.moveTo(0,LANE_TOP);ctx.lineTo(W,LANE_TOP);
-  ctx.moveTo(0,LANE_BOT);ctx.lineTo(W,LANE_BOT);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // Lane indicators
-  ctx.globalAlpha=0.08;
-  ctx.fillStyle=`hsl(${bgHue},50%,40%)`;
-  ctx.fillRect(0,LANE_TOP-25,W,50);
-  ctx.fillRect(0,LANE_BOT-25,W,50);
-  ctx.globalAlpha=1;
-}
-
-function drawGates(){
-  for(const g of gates){
-    const gx=g.x;
-    const gw=g.w;
-
-    // Top gate bar
-    const tc=COLORS[g.topColor];
-    ctx.fillStyle=hsl(tc,0.85);
-    ctx.shadowColor=hsl(tc,0.5);
-    ctx.shadowBlur=15;
-    roundRect(gx,LANE_TOP-28,gw,56,8);
-    ctx.fill();
-    ctx.shadowBlur=0;
-
-    // Inner glow top
-    ctx.fillStyle=hsl(tc,0.3);
-    roundRect(gx+4,LANE_TOP-20,gw-8,40,4);
-    ctx.fill();
-
-    // Bottom gate bar
-    const bc=COLORS[g.botColor];
-    ctx.fillStyle=hsl(bc,0.85);
-    ctx.shadowColor=hsl(bc,0.5);
-    ctx.shadowBlur=15;
-    roundRect(gx,LANE_BOT-28,gw,56,8);
-    ctx.fill();
-    ctx.shadowBlur=0;
-
-    // Inner glow bottom
-    ctx.fillStyle=hsl(bc,0.3);
-    roundRect(gx+4,LANE_BOT-20,gw-8,40,4);
-    ctx.fill();
-
-    // Connection line between gates
-    ctx.strokeStyle=`hsla(${bgHue},20%,40%,0.15)`;
-    ctx.lineWidth=2;
+function drawFlowLines() {
+  for (const fl of flowLines) {
+    ctx.save();
+    ctx.globalAlpha  = fl.alpha;
+    ctx.strokeStyle  = `hsl(${hue + 20}, 70%, 60%)`;
+    ctx.lineWidth    = 1.2;
+    ctx.lineCap      = 'round';
+    const d = tideDir;
     ctx.beginPath();
-    ctx.moveTo(gx+gw/2,LANE_TOP+28);
-    ctx.lineTo(gx+gw/2,LANE_BOT-28);
+    ctx.moveTo(fl.x,               fl.y);
+    ctx.lineTo(fl.x + d * 8,       fl.y - fl.len * 0.35);
+    ctx.lineTo(fl.x,               fl.y - fl.len);
     ctx.stroke();
+    ctx.restore();
   }
 }
 
-function roundRect(x,y,w,h,r){
+function drawWalls() {
+  const wallL = CX - CHANNEL_W / 2;
+  const wallR = CX + CHANNEL_W / 2;
+
+  // Left wall gradient
+  const lGrad = ctx.createLinearGradient(0, 0, wallL, 0);
+  lGrad.addColorStop(0, 'rgba(2,8,20,1)');
+  lGrad.addColorStop(1, `hsla(${hue}, 55%, 20%, 0.90)`);
+  ctx.fillStyle = lGrad;
+  ctx.fillRect(0, 0, wallL, H);
+
+  // Right wall gradient
+  const rGrad = ctx.createLinearGradient(wallR, 0, W, 0);
+  rGrad.addColorStop(0, `hsla(${hue}, 55%, 20%, 0.90)`);
+  rGrad.addColorStop(1, 'rgba(2,8,20,1)');
+  ctx.fillStyle = rGrad;
+  ctx.fillRect(wallR, 0, W - wallR, H);
+
+  // Glowing wall edges
+  ctx.save();
+  ctx.globalAlpha = 0.45;
+  ctx.strokeStyle = `hsl(${hue}, 70%, 55%)`;
+  ctx.lineWidth   = 2;
+  ctx.shadowColor = `hsl(${hue}, 80%, 55%)`;
+  ctx.shadowBlur  = 8;
+  ctx.beginPath(); ctx.moveTo(wallL, 0); ctx.lineTo(wallL, H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(wallR, 0); ctx.lineTo(wallR, H); ctx.stroke();
+  ctx.restore();
+}
+
+function drawGate(g) {
+  const wallL = CX - CHANNEL_W / 2;
+  const wallR = CX + CHANNEL_W / 2;
+  const gapL  = g.gapCX - g.gapW / 2;
+  const gapR  = g.gapCX + g.gapW / 2;
+  const top   = g.y - GATE_H / 2;
+
+  const baseH = g.scored ? hue + 60 : hue + 20;
+  const col1  = `hsl(${baseH}, 90%, 60%)`;
+  const col2  = `hsl(${baseH}, 90%, 35%)`;
+
+  // Left bar
+  if (gapL > wallL) {
+    const gr = ctx.createLinearGradient(wallL, 0, gapL, 0);
+    gr.addColorStop(0, col1);
+    gr.addColorStop(1, col2);
+    ctx.fillStyle = gr;
+    ctx.fillRect(wallL, top, gapL - wallL, GATE_H);
+  }
+
+  // Right bar
+  if (gapR < wallR) {
+    const gr = ctx.createLinearGradient(gapR, 0, wallR, 0);
+    gr.addColorStop(0, col2);
+    gr.addColorStop(1, col1);
+    ctx.fillStyle = gr;
+    ctx.fillRect(gapR, top, wallR - gapR, GATE_H);
+  }
+
+  // Gap glow hint
+  ctx.save();
+  ctx.globalAlpha = 0.15;
+  ctx.fillStyle   = `hsl(${baseH + 180}, 100%, 75%)`;
+  ctx.fillRect(gapL, top - 2, g.gapW, GATE_H + 4);
+  ctx.restore();
+
+  // Edge dots
+  ctx.globalAlpha = 0.55;
+  ctx.fillStyle   = '#fff';
+  if (gapL > wallL + 5) {
+    ctx.beginPath(); ctx.arc(gapL - 5, g.y, 2.5, 0, Math.PI * 2); ctx.fill();
+  }
+  if (gapR < wallR - 5) {
+    ctx.beginPath(); ctx.arc(gapR + 5, g.y, 2.5, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawPearl() {
+  const { x, y } = pearl;
+
+  // Outer halo glow
+  const halo = ctx.createRadialGradient(x, y, PEARL_R * 0.3, x, y, PEARL_R * 2.5);
+  halo.addColorStop(0, `hsla(${hue}, 100%, 85%, 0.30)`);
+  halo.addColorStop(1, 'transparent');
+  ctx.fillStyle = halo;
   ctx.beginPath();
-  ctx.moveTo(x+r,y);
-  ctx.lineTo(x+w-r,y);
-  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r);
-  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h);
-  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r);
-  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.arc(x, y, PEARL_R * 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Pearl body
+  const body = ctx.createRadialGradient(x - 3, y - 3, 1, x, y, PEARL_R);
+  body.addColorStop(0,   `hsl(${hue}, 75%, 92%)`);
+  body.addColorStop(0.5, `hsl(${hue}, 65%, 65%)`);
+  body.addColorStop(1,   `hsl(${hue}, 55%, 30%)`);
+  ctx.fillStyle = body;
+  ctx.beginPath();
+  ctx.arc(x, y, PEARL_R, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Specular highlight
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.beginPath();
+  ctx.arc(x - 4, y - 4, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Fin direction indicator (small triangle)
+  const fx = x + finDir * (PEARL_R + 7);
+  ctx.fillStyle = `hsl(${hue + 90}, 100%, 68%)`;
+  ctx.globalAlpha = 0.88;
+  ctx.beginPath();
+  ctx.moveTo(fx,                  y - 5);
+  ctx.lineTo(fx + finDir * 9,     y);
+  ctx.lineTo(fx,                  y + 5);
   ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha = 1;
 }
 
-function drawDiver(){
-  const x=diverX;
-  const y=diverY;
-  const c=diverColor;
-  const pulse=1+Math.sin(gameTime*0.1)*0.08;
-  const r=18*pulse;
+function drawParticles() {
+  for (const p of particles) {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
 
-  // Outer glow
-  ctx.shadowColor=hsl(c,0.8);
-  ctx.shadowBlur=25;
+    if (p.type === 'bubble') {
+      ctx.strokeStyle = `hsla(${hue + 30}, 80%, 78%, ${p.life.toFixed(2)})`;
+      ctx.lineWidth   = 1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.stroke();
 
-  // Body
-  ctx.fillStyle=hsl(c,0.9);
-  ctx.beginPath();
-  ctx.arc(x,y,r,0,Math.PI*2);
-  ctx.fill();
-  ctx.shadowBlur=0;
+    } else if (p.type === 'burst') {
+      ctx.fillStyle = `hsl(${p.hue || hue}, 100%, 70%)`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * Math.max(0.1, p.life), 0, Math.PI * 2);
+      ctx.fill();
 
-  // Inner highlight
-  const ig=ctx.createRadialGradient(x-4,y-4,0,x,y,r);
-  ig.addColorStop(0,`hsla(${c.h},${c.s}%,${Math.min(100,c.l+30)}%,0.6)`);
-  ig.addColorStop(1,'transparent');
-  ctx.fillStyle=ig;
-  ctx.beginPath();
-  ctx.arc(x,y,r,0,Math.PI*2);
-  ctx.fill();
+    } else if (p.type === 'shard') {
+      ctx.fillStyle = `hsl(${p.hue || 200}, 80%, 62%)`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * Math.max(0.05, p.life), 0, Math.PI * 2);
+      ctx.fill();
 
-  // Eye
-  const eyeDir=diverTargetY<LANE_MID?-1:1;
-  ctx.fillStyle='#fff';
-  ctx.beginPath();
-  ctx.arc(x+5,y+eyeDir*3,5,0,Math.PI*2);
-  ctx.fill();
-  ctx.fillStyle='#111';
-  ctx.beginPath();
-  ctx.arc(x+6.5,y+eyeDir*3.5,2.5,0,Math.PI*2);
-  ctx.fill();
+    } else if (p.type === 'arrow') {
+      ctx.strokeStyle = `hsl(${hue}, 90%, 65%)`;
+      ctx.lineWidth   = 1.5;
+      ctx.globalAlpha = p.life * 0.45;
+      ctx.beginPath();
+      ctx.moveTo(p.x - p.vx * 0.06, p.y);
+      ctx.lineTo(p.x + p.vx * 0.06, p.y);
+      ctx.stroke();
+    }
 
-  // Color indicator ring
-  ctx.strokeStyle=hsl(c,0.6);
-  ctx.lineWidth=2;
-  ctx.beginPath();
-  ctx.arc(x,y,r+4,0,Math.PI*2);
-  ctx.stroke();
-}
-
-function drawParticles(){
-  for(const p of particles){
-    const a=p.life/p.maxLife;
-    ctx.globalAlpha=a;
-    ctx.fillStyle=hsl(p.color,a);
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r*a,0,Math.PI*2);
-    ctx.fill();
+    ctx.restore();
   }
-  ctx.globalAlpha=1;
 }
 
-function drawBubbles(){
-  for(const b of bubbles){
-    const a=b.life/b.maxLife*0.4;
-    ctx.strokeStyle=`hsla(${bgHue},50%,70%,${a})`;
-    ctx.lineWidth=1;
+// Idle background for start/gameover screens
+function drawIdleBg() {
+  if (!W || !H) return;
+  ctx.save();
+  ctx.scale(DPR, DPR);
+  ctx.fillStyle = '#04101f';
+  ctx.fillRect(0, 0, W, H);
+
+  // Simple wave lines
+  for (let i = 0; i < 6; i++) {
+    ctx.save();
+    ctx.globalAlpha = 0.04 + i * 0.025;
+    ctx.strokeStyle = '#00e5ff';
+    ctx.lineWidth   = 1;
     ctx.beginPath();
-    ctx.arc(b.x,b.y,b.r*(b.life/b.maxLife),0,Math.PI*2);
+    const yBase = H * 0.2 + i * 55;
+    for (let x = 0; x <= W; x += 3) {
+      const yy = yBase + Math.sin(x * 0.025 + i * 1.2) * 12;
+      x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+    }
     ctx.stroke();
+    ctx.restore();
   }
+  ctx.restore();
 }
 
-function drawHUD(){
-  // Score
-  ctx.fillStyle='#fff';
-  ctx.font='bold 28px "Segoe UI",system-ui,sans-serif';
-  ctx.textAlign='center';
-  ctx.fillText(score,W/2,50);
+// ── RAF game loop ─────────────────────────────────────────
+let rafId    = null;
+let lastTime = 0;
 
-  // Best
-  ctx.font='13px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='hsla(0,0%,100%,0.5)';
-  ctx.fillText(`BEST: ${best}`,W/2,72);
+function loop(ts) {
+  const dt = lastTime ? Math.min((ts - lastTime) / 1000, DT_MAX) : 0;
+  lastTime  = ts;
 
-  // Combo
-  if(combo>1){
-    ctx.font='bold 18px "Segoe UI",system-ui,sans-serif';
-    const comboHue=(bgHue+120)%360;
-    ctx.fillStyle=`hsl(${comboHue},80%,65%)`;
-    ctx.fillText(`${combo}x COMBO`,W/2,100);
-  }
-
-  // Color indicator at diver
-  ctx.font='bold 11px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle=hsl(diverColor,0.8);
-  ctx.fillText('MATCH THIS COLOR',diverX,diverY-(diverTargetY<=LANE_MID?-35:35));
-
-  // Perfect flash
-  if(perfectFlash>0){
-    ctx.font='bold 22px "Segoe UI",system-ui,sans-serif';
-    ctx.fillStyle=`hsla(50,100%,70%,${perfectFlash/15})`;
-    ctx.fillText('PERFECT!',W/2,H/2);
-  }
-}
-
-function drawStartScreen(){
-  drawBackground();
-
-  // Title
-  ctx.textAlign='center';
-  ctx.fillStyle='#fff';
-  ctx.font='bold 42px "Segoe UI",system-ui,sans-serif';
-  ctx.fillText('TIDE TWIST',W/2,250);
-
-  ctx.font='16px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle=`hsl(${(bgHue+60)%360},70%,65%)`;
-  ctx.fillText('Color Gates',W/2,280);
-
-  // Animated diver preview
-  const previewY=380+Math.sin(Date.now()*0.003)*20;
-  const previewC=COLORS[Math.floor(Date.now()/1000)%COLORS.length];
-  ctx.fillStyle=hsl(previewC,0.8);
-  ctx.shadowColor=hsl(previewC,0.6);
-  ctx.shadowBlur=20;
-  ctx.beginPath();
-  ctx.arc(W/2,previewY,22,0,Math.PI*2);
-  ctx.fill();
-  ctx.shadowBlur=0;
-
-  // Tap to start
-  const tapA=0.5+Math.sin(Date.now()*0.004)*0.3;
-  ctx.globalAlpha=tapA;
-  ctx.font='18px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='#fff';
-  ctx.fillText('TAP TO START',W/2,500);
-  ctx.globalAlpha=1;
-
-  // Controls hint
-  ctx.font='12px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='hsla(0,0%,100%,0.4)';
-  ctx.fillText('Tap / Space / Enter to flip gravity',W/2,530);
-
-  // Best score
-  if(best>0){
-    ctx.font='14px "Segoe UI",system-ui,sans-serif';
-    ctx.fillStyle='hsla(0,0%,100%,0.6)';
-    ctx.fillText(`Best: ${best}`,W/2,570);
-  }
-
-  // Challenge banner
-  if(challengeScore>0){
-    ctx.fillStyle='hsla(45,100%,50%,0.15)';
-    roundRect(W/2-130,600,260,40,10);
-    ctx.fill();
-    ctx.font='bold 15px "Segoe UI",system-ui,sans-serif';
-    ctx.fillStyle='hsl(45,100%,65%)';
-    ctx.textAlign='center';
-    ctx.fillText(`Challenge: beat ${challengeScore}!`,W/2,626);
-  }
-}
-
-function drawGameOver(){
-  // Dim overlay
-  ctx.fillStyle='rgba(5,7,12,0.8)';
-  ctx.fillRect(0,0,W,H);
-
-  ctx.textAlign='center';
-
-  // Game over title
-  ctx.font='bold 36px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='#ff6666';
-  ctx.fillText('GAME OVER',W/2,280);
-
-  // Score
-  ctx.font='bold 52px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='#fff';
-  ctx.fillText(score,W/2,360);
-  ctx.font='13px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='hsla(0,0%,100%,0.5)';
-  ctx.fillText('SCORE',W/2,380);
-
-  // Best
-  ctx.font='bold 22px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle=score>=best?'hsl(50,100%,65%)':'hsla(0,0%,100%,0.7)';
-  ctx.fillText(`Best: ${best}`,W/2,420);
-  if(score>=best&&score>0){
-    ctx.font='12px "Segoe UI",system-ui,sans-serif';
-    ctx.fillStyle='hsl(50,100%,65%)';
-    ctx.fillText('NEW RECORD!',W/2,442);
-  }
-
-  // Max combo
-  ctx.font='16px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='hsla(0,0%,100%,0.6)';
-  ctx.fillText(`Max Combo: ${maxCombo}x`,W/2,475);
-
-  // Challenge result
-  if(challengeScore>0){
-    ctx.font='bold 14px "Segoe UI",system-ui,sans-serif';
-    if(score>=challengeScore){
-      ctx.fillStyle='hsl(120,70%,55%)';
-      ctx.fillText('CHALLENGE BEATEN!',W/2,500);
-    }else{
-      ctx.fillStyle='hsl(0,60%,55%)';
-      ctx.fillText(`Needed ${challengeScore} to beat challenge`,W/2,500);
-    }
-  }
-
-  // Share button
-  ctx.fillStyle='hsla(210,60%,50%,0.8)';
-  roundRect(shareBtn.x,shareBtn.y,shareBtn.w,shareBtn.h,8);
-  ctx.fill();
-  ctx.font='bold 13px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='#fff';
-  ctx.fillText('SHARE',W/2,shareBtn.y+23);
-
-  // Tap to retry
-  const tapA=0.5+Math.sin(Date.now()*0.004)*0.3;
-  ctx.globalAlpha=tapA;
-  ctx.font='16px "Segoe UI",system-ui,sans-serif';
-  ctx.fillStyle='#fff';
-  ctx.fillText('TAP TO RETRY',W/2,600);
-  ctx.globalAlpha=1;
-}
-
-function frame(ts){
-  requestAnimationFrame(frame);
-
-  let dt=(ts-lastTime)/16.667;
-  lastTime=ts;
-  if(dt>3)dt=3;
-  if(dt<0)dt=1;
-
-  // Recalc transform with shake
-  const dpr=window.devicePixelRatio||1;
-  const r=wrap.getBoundingClientRect();
-  const sx=r.width*dpr/W;
-  const sy=r.height*dpr/H;
-  ctx.setTransform(sx,0,0,sy,shakeX*sx,shakeY*sy);
-
-  if(state===START){
-    tidePhase+=dt*0.02;
-    gameTime+=dt;
-    drawStartScreen();
-  }else if(state===PLAYING){
+  if (STATE === 'playing') {
     update(dt);
-    drawBackground();
-    drawLanes();
-    drawBubbles();
-    drawGates();
-    drawDiver();
-    drawParticles();
-    drawHUD();
-
-    // Flash overlay
-    if(flashAlpha>0){
-      ctx.fillStyle=`rgba(255,255,255,${flashAlpha})`;
-      ctx.fillRect(0,0,W,H);
-    }
-  }else if(state===GAMEOVER){
-    // Still draw background and existing elements
-    gameTime+=dt*0.3;
-    drawBackground();
-    drawLanes();
-    drawBubbles();
-    drawGates();
-
-    // Update particles even in game over
-    for(let i=particles.length-1;i>=0;i--){
-      const p=particles[i];
-      p.x+=p.vx;p.y+=p.vy;
-      p.vx*=0.96;p.vy*=0.96;
-      p.life-=dt;
-      if(p.life<=0)particles.splice(i,1);
-    }
-    drawParticles();
-
-    // Shake decay in gameover
-    if(shakeDur>0){
-      shakeDur-=dt;
-      shakeX=(Math.random()-0.5)*shakeStr;
-      shakeY=(Math.random()-0.5)*shakeStr;
-      shakeStr*=0.92;
-      if(shakeDur<=0){shakeX=0;shakeY=0}
-    }
-
-    if(flashAlpha>0){
-      ctx.fillStyle=`rgba(255,50,50,${flashAlpha})`;
-      ctx.fillRect(0,0,W,H);
-      flashAlpha-=0.015;
-    }
-
-    drawGameOver();
+    draw();
   }
+
+  rafId = requestAnimationFrame(loop);
 }
 
-requestAnimationFrame(frame);
-})();
+function startLoop() {
+  if (rafId) cancelAnimationFrame(rafId);
+  lastTime = 0;
+  rafId = requestAnimationFrame(loop);
+}
+
+// ── State machine ─────────────────────────────────────────
+function setStart() {
+  STATE = 'start';
+  overlay.classList.remove('hidden');
+  ovTitle.textContent       = 'Tide Twist';
+  ovSub.textContent         = 'Resist the current. Pass through every gate.';
+  ovScoreWrap.style.display = 'none';
+  btnPlay.textContent       = 'DIVE IN';
+  btnShare.style.display    = 'none';
+  currentArrow.style.opacity = '0';
+  drawIdleBg();
+}
+
+function setPlaying() {
+  STATE = 'playing';
+  overlay.classList.add('hidden');
+  currentArrow.style.opacity = '1';
+  initGame();
+  startLoop();
+}
+
+function setGameOver() {
+  STATE = 'gameover';
+  overlay.classList.remove('hidden');
+  ovTitle.textContent       = 'WRECKED';
+  const isNewBest           = score >= best && score > 0;
+  ovSub.textContent         = isNewBest ? '\uD83C\uDFC6 New Best!' : 'The tide won this time.';
+  ovScoreWrap.style.display = 'block';
+  ovScore.textContent       = score;
+  btnPlay.textContent       = 'TRY AGAIN';
+  btnShare.style.display    = 'inline-block';
+  currentArrow.style.opacity = '0';
+}
+
+// ── Input ─────────────────────────────────────────────────
+function flipFin() {
+  if (STATE === 'playing') finDir = -finDir;
+}
+
+function startFromUI() {
+  if (STATE === 'start' || STATE === 'gameover') setPlaying();
+}
+
+// Canvas pointer (tap to flip)
+canvas.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  flipFin();
+});
+
+// Keyboard Space / Enter
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' || e.code === 'Enter') {
+    e.preventDefault();
+    if (STATE === 'playing') flipFin();
+    else startFromUI();
+  }
+});
+
+// Overlay tap (excluding buttons)
+overlay.addEventListener('pointerdown', (e) => {
+  if (e.target === overlay || e.target.tagName === 'H1' || e.target.tagName === 'P') {
+    startFromUI();
+  }
+});
+
+btnPlay.addEventListener('click',  startFromUI);
+
+btnShare.addEventListener('click', () => {
+  const text = `I scored ${score} in Tide Twist! Can you beat me? \uD83C\uDF0A`;
+  const url  = 'https://balinti.github.io/tide-twist/';
+  if (navigator.share) {
+    navigator.share({ title: 'Tide Twist', text, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(`${text} ${url}`).then(() => {
+      btnShare.textContent = 'COPIED!';
+      setTimeout(() => { btnShare.textContent = 'SHARE'; }, 2200);
+    }).catch(() => {
+      prompt('Copy this link:', `${text} ${url}`);
+    });
+  }
+});
+
+// ── Boot ──────────────────────────────────────────────────
+resizeCanvas();
+setStart();
+startLoop(); // keep running for idle background animation
 </script>
 </body>
 </html>
